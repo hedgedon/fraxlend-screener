@@ -18,20 +18,22 @@ func (s *Scope) createPairContracts() map[string]*thirdweb.SmartContract {
 	return fraxlendPairContracts
 }
 
-func (s *Scope) getPairData() {
-	name, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "name")
+func (s *Scope) getPairData(fraxlendPair string) {
+	fmt.Println("")
+	fmt.Println(">>>>> FRAXLEND PAIR DATA <<<<<<")
+	name, err := s.contracts[fraxlendPair].Call(s.ctx, "name")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("name:", name)
 
-	symbol, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "symbol")
+	symbol, err := s.contracts[fraxlendPair].Call(s.ctx, "symbol")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("symbol:", symbol)
 
-	pairAccounting, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "getPairAccounting")
+	pairAccounting, err := s.contracts[fraxlendPair].Call(s.ctx, "getPairAccounting")
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +58,7 @@ func (s *Scope) getPairData() {
 		Total collateral
 	*/
 
-	totalBorrow, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "totalBorrow")
+	totalBorrow, err := s.contracts[fraxlendPair].Call(s.ctx, "totalBorrow")
 	if err != nil {
 		panic(err)
 	}
@@ -64,19 +66,19 @@ func (s *Scope) getPairData() {
 	// total borrow:  [3521540165111577988854598 3508827027810177699518635]
 	//TOTAL BORROW VALUE $3.52m
 
-	totalAsset, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "totalAsset")
+	totalAsset, err := s.contracts[fraxlendPair].Call(s.ctx, "totalAsset")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("total Asset: ", totalAsset)
 
-	totalSupply, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "totalSupply")
+	totalSupply, err := s.contracts[fraxlendPair].Call(s.ctx, "totalSupply")
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("total Supply: ", totalSupply)
 
-	maxLtv, err := s.contracts[FXS_FRAX_POOL].Call(s.ctx, "maxLTV")
+	maxLtv, err := s.contracts[fraxlendPair].Call(s.ctx, "maxLTV")
 	if err != nil {
 		panic(err)
 	}

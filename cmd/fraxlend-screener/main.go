@@ -53,6 +53,7 @@ func main() {
 }
 
 func (s *Scope) run() {
-	s.getPairData()
-	s.getUserData()
+	s.getPairData(FXS_FRAX_POOL)
+	s.getPairData(CRV_FRAX_POOL)
+	s.getUserData(FXS_FRAX_POOL, os.Getenv("MY_ADDRESS"))
 }
