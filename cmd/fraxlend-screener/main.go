@@ -2,72 +2,57 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/thirdweb-dev/go-sdk/thirdweb"
 	"log"
 	"os"
+	"os/signal"
 )
+
+type Scope struct {
+	ctx       context.Context
+	sdk       *thirdweb.ThirdwebSDK
+	contracts map[string]*thirdweb.SmartContract
+}
 
 func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	RPC_URL := os.Getenv("RPC_URL")
-	PRIVATE_KEY := os.Getenv("PRIVATE_KEY")
+	ctx, cancel := context.WithCancel(context.Background())
+	RpcUrl := os.Getenv("RPC_URL")
+	//PrivateKey := os.Getenv("PRIVATE_KEY")
 
-	ctx := context.Background()
-
-	sdk, err := thirdweb.NewThirdwebSDK(RPC_URL, &thirdweb.SDKOptions{
-		PrivateKey: PRIVATE_KEY,
-	})
+	sdk, err := thirdweb.NewThirdwebSDK(RpcUrl, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	contract, err := sdk.GetContractFromAbi(CRV_FRAX_POOL, FRAXLEND_PAIR_ABI)
-	if err != nil {
-		panic(err)
+	scope := &Scope{
+		sdk: sdk,
+		ctx: ctx,
 	}
-	fmt.Println(contract)
+	fraxlendPairContracts := scope.createPairContracts()
+	scope.contracts = fraxlendPairContracts
 
-	name, err := contract.Call(ctx, "name")
-	if err != nil {
-		panic(err)
+	go scope.run()
+
+	// if u want to run go scope.run() as a goroutine, u need the part below.
+	// otherwise, call with scope.run()
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	select {
+	case <-c:
+		signal.Stop(c)
+		cancel()
+		<-ctx.Done()
+		log.Println("~ ~ ~ ~ exiting ~ ~ ~ ~")
+		os.Exit(0)
 	}
-	fmt.Println("name:", name)
+}
 
-	symbol, err := contract.Call(ctx, "symbol")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("symbol:", symbol)
-
-	totalBorrow, err := contract.Call(ctx, "totalBorrow")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("total borrow: ", totalBorrow)
-	// total borrow:  [3521540165111577988854598 3508827027810177699518635]
-	//TOTAL BORROW VALUE $3.52m
-
-	totalCollateral, err := contract.Call(ctx, "totalCollateral")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("total Collateral: ", totalCollateral)
-
-	totalAsset, err := contract.Call(ctx, "totalAsset")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("total Asset: ", totalAsset)
-
-	totalSupply, err := contract.Call(ctx, "totalSupply")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("total Supply: ", totalSupply)
-
+func (s *Scope) run() {
+	s.getPairData()
+	s.getUserData()
 }
