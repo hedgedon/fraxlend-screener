@@ -38,8 +38,6 @@ func main() {
 
 	go scope.run()
 
-	// if u want to run go scope.run() as a goroutine, u need the part below.
-	// otherwise, call with scope.run()
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
 	select {
