@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/thirdweb-dev/go-sdk/thirdweb"
+	"github.com/thirdweb-dev/go-sdk/v2/thirdweb"
 )
 
 func (s *Scope) createPairContracts(contractAddresses []string) map[string]*thirdweb.SmartContract {

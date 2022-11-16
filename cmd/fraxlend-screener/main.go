@@ -4,9 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/hedgedon/fraxlend-screener/pkg/cli"
 	"github.com/joho/godotenv"
-	"github.com/thirdweb-dev/go-sdk/thirdweb"
+	"github.com/thirdweb-dev/go-sdk/v2/thirdweb"
 	"log"
 	"os"
 	"os/signal"
@@ -82,7 +81,7 @@ func (s *Scope) run() {
 	s.getUserData(FXS_FRAX_POOL, os.Getenv("MY_ADDRESS"))
 }
 
-func (s *Scope) run_cli() {
-	program := cli.Run_cli()
-	program.Start()
-}
+//func (s *Scope) run_cli() {
+//	program := cli.Run_cli()
+//	program.Start()
+//}
