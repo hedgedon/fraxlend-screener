@@ -77,10 +77,13 @@ func TestFraxlendContractEvents_BorrowAsset(t *testing.T) {
 		t.Errorf("error: %v \n", err)
 	}
 	contract, err := sdk.GetContractFromAbi(FXS_FRAX_POOL, FRAXLEND_PAIR_ABI)
-	//filters := map[string]interface{}{
-	//	"_borrower": common.HexToAddress("0xd1F2739ad714045BE6146915275D0a2B822Ec1CC"),
-	//}
-	events, _ := contract.Events.GetEvents(context.Background(), "BorrowAsset", thirdweb.EventQueryOptions{})
+	filters := map[string]interface{}{
+		"_borrower": common.HexToAddress("0xd1F2739ad714045BE6146915275D0a2B822Ec1CC"),
+	}
+	queryOptions := thirdweb.EventQueryOptions{
+		Filters: filters,
+	}
+	events, _ := contract.Events.GetEvents(context.Background(), "BorrowAsset", queryOptions)
 	if err != nil {
 		panic(err)
 	}
