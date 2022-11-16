@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 func fetchValue(value interface{}) {
 	switch value.(type) {
@@ -15,6 +18,7 @@ func fetchValue(value interface{}) {
 		for _, v := range value.([]interface{}) { // use type assertion to loop over []interface{}
 			//fetchValue(v)
 			fmt.Println(v)
+			//return v
 		}
 	case map[string]interface{}:
 		fmt.Printf("%v is a map \n ", value)
@@ -25,3 +29,19 @@ func fetchValue(value interface{}) {
 		fmt.Printf("%v is unknown \n ", value)
 	}
 }
+
+func pretty(o map[string]string) {
+	b, err := json.MarshalIndent(o, "", "  ")
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Print(string(b))
+}
+
+//func pretty2(o map[string]*any) {
+//	b, err := json.MarshalIndent(o, "", "  ")
+//	if err != nil {
+//		fmt.Println("error:", err)
+//	}
+//	fmt.Print(string(b))
+//}

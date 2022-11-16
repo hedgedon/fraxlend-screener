@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/hedgedon/fraxlend-screener/pkg/cli"
 	"github.com/joho/godotenv"
 	"github.com/thirdweb-dev/go-sdk/thirdweb"
 	"log"
@@ -13,6 +16,7 @@ type Scope struct {
 	ctx       context.Context
 	sdk       *thirdweb.ThirdwebSDK
 	contracts map[string]*thirdweb.SmartContract
+	tokenList map[string]string
 }
 
 func main() {
@@ -21,22 +25,39 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 	ctx, cancel := context.WithCancel(context.Background())
-	RpcUrl := os.Getenv("RPC_URL")
-	//PrivateKey := os.Getenv("PRIVATE_KEY")
-
-	sdk, err := thirdweb.NewThirdwebSDK(RpcUrl, nil)
+	rpcUrl := os.Getenv("RPC_URL")
+	sdk, err := thirdweb.NewThirdwebSDK(rpcUrl, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	scope := &Scope{
-		sdk: sdk,
-		ctx: ctx,
+	pretty(TokenPairList)
+
+	tokenContract, err := sdk.GetToken(CHZ_TOKEN)
+	token, err := tokenContract.BalanceOf(os.Getenv("MY_ADDRESS"))
+	if err != nil {
+		panic(err)
 	}
-	fraxlendPairContracts := scope.createPairContracts()
+	balance := token.DisplayValue
+	fmt.Println("balance:", balance)
+
+	scope := &Scope{
+		sdk:       sdk,
+		ctx:       ctx,
+		tokenList: TokenPairList,
+	}
+
+	fraxlendPairContracts := scope.createPairContracts(FraxlendPairList)
+	//pretty2(fraxlendPairContracts)
+	b, err := json.MarshalIndent(fraxlendPairContracts, "", "  ")
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Print(string(b))
 	scope.contracts = fraxlendPairContracts
 
 	go scope.run()
+	//go scope.run_cli()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
@@ -51,7 +72,17 @@ func main() {
 }
 
 func (s *Scope) run() {
-	s.getPairData(FXS_FRAX_POOL)
-	s.getPairData(CRV_FRAX_POOL)
+	//program := cli.Run_cli()
+	//program.Start()
+
+	for i, _ := range s.contracts {
+		s.getPairData(i)
+	}
+
 	s.getUserData(FXS_FRAX_POOL, os.Getenv("MY_ADDRESS"))
+}
+
+func (s *Scope) run_cli() {
+	program := cli.Run_cli()
+	program.Start()
 }
