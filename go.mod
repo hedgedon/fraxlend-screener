@@ -36,7 +36,7 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/thirdweb-dev/go-sdk v1.3.3 // indirect
-	github.com/thirdweb-dev/go-sdk/v2 v2.0.0-beta-0.0.20221116010258-c2277b7fd7b5 // indirect
+	github.com/thirdweb-dev/go-sdk/v2 v2.0.0-beta-0.0.20221116151454-a5ac5d6142b2 // indirect
 	github.com/tklauser/go-sysconf v0.3.10 // indirect
 	github.com/tklauser/numcpus v0.5.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
