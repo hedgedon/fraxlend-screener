@@ -32,14 +32,6 @@ func main() {
 
 	pretty(TokenPairList)
 
-	tokenContract, err := sdk.GetToken(CHZ_TOKEN)
-	token, err := tokenContract.BalanceOf(os.Getenv("MY_ADDRESS"))
-	if err != nil {
-		panic(err)
-	}
-	balance := token.DisplayValue
-	fmt.Println("balance:", balance)
-
 	scope := &Scope{
 		sdk:       sdk,
 		ctx:       ctx,
