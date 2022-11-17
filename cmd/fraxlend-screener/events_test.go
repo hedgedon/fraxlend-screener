@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/joho/godotenv"
 	"github.com/thirdweb-dev/go-sdk/v2/thirdweb"
@@ -88,6 +87,8 @@ func TestFraxlendContractEvents_BorrowAsset(t *testing.T) {
 		panic(err)
 	}
 	for _, e := range events {
-		fmt.Printf("%#v\n", e)
+		t.Logf("Event: %v. tx: %v", e.EventName, e.Transaction.TxHash)
 	}
 }
+
+// what problem do i want to solve
