@@ -91,4 +91,38 @@ func TestFraxlendContractEvents_BorrowAsset(t *testing.T) {
 	}
 }
 
-// what problem do i want to solve
+// TestPairDataEvent: Filter a Fraxlend Pairs Event Occurrences
+func TestPairDataEvent(t *testing.T) {
+	sdk, err := thirdweb.NewThirdwebSDK("mainnet", nil)
+	if err != nil {
+		t.Errorf("error: %v \n", err)
+	}
+	// If no filter needed:
+	queryOptions := thirdweb.EventQueryOptions{}
+	// Or Filter by specific User
+	//randomUser := "0x3689c216f8f6ce7e2CE2a27c81a23096A787F532"
+	//filters := map[string]interface{}{
+	//	"_borrower": common.HexToAddress(randomUser),
+	//}
+	//queryOptions := thirdweb.EventQueryOptions{
+	//	Filters: filters,
+	//}
+	contracts := GenerateReusableContracts(sdk)
+	for pair, _ := range contracts {
+		contract, err := sdk.GetContractFromAbi(pair, FRAXLEND_PAIR_ABI)
+		if err != nil {
+			t.Errorf("contract err: %v", err)
+		}
+		eventsAddCollateral, _ := contract.Events.GetEvents(context.Background(), "AddCollateral", queryOptions)
+		if err != nil {
+			t.Errorf("AddCollateral err: %v", err)
+		}
+		eventsBorrowAsset, _ := contract.Events.GetEvents(context.Background(), "BorrowAsset", queryOptions)
+		if err != nil {
+			t.Errorf("BorrowAsset err: %v", err)
+		}
+		t.Logf("Pair: %v", pair)
+		t.Logf("# of AddCollateral events: %v", len(eventsAddCollateral))
+		t.Logf("# of BorrowAsset events: %v", len(eventsBorrowAsset))
+	}
+}
