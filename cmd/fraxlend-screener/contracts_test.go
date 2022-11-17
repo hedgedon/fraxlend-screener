@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func generateReusableContracts(sdk *thirdweb.ThirdwebSDK) map[string]*thirdweb.SmartContract {
+func GenerateReusableContracts(sdk *thirdweb.ThirdwebSDK) map[string]*thirdweb.SmartContract {
 	fraxlendPairContracts := make(map[string]*thirdweb.SmartContract)
 	for _, pair := range FraxlendPairList {
 		contract, err := sdk.GetContractFromAbi(pair, FRAXLEND_PAIR_ABI)
@@ -25,7 +25,7 @@ func TestCreatePairContracts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	contracts := generateReusableContracts(sdk)
+	contracts := GenerateReusableContracts(sdk)
 	resp, err := json.MarshalIndent(contracts, "", "  ")
 	if err != nil {
 		t.Fatal(err)
@@ -38,7 +38,7 @@ func TestPairDataContract(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fraxlendPairContracts := generateReusableContracts(sdk)
+	fraxlendPairContracts := GenerateReusableContracts(sdk)
 	for pair, _ := range fraxlendPairContracts {
 		name, err := fraxlendPairContracts[pair].Call(context.Background(), "name")
 		if err != nil {
@@ -85,7 +85,7 @@ func TestUserDataContract(t *testing.T) {
 		t.Fatal(err)
 	}
 	randomUser := "0x3689c216f8f6ce7e2CE2a27c81a23096A787F532"
-	contracts := generateReusableContracts(sdk)
+	contracts := GenerateReusableContracts(sdk)
 	snapshot, err := contracts[FXS_FRAX_POOL].Call(context.Background(), "getUserSnapshot", randomUser)
 	if err != nil {
 		t.Logf("Snapshot err: %v", err)
